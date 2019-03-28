@@ -33,6 +33,8 @@
             <td><form:password path="password" /></td>
             <td><form:errors path="password"/> </td>
         </tr>
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
         <tr>
             <td colspan="2">
                 <spring:message code="entry" var="entrylabel"/>
