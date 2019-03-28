@@ -1,10 +1,12 @@
 package library.controllers;
 
 import library.dto.UserDTO;
+import library.service.SecurityService;
 import library.service.UserService;
 import library.validators.RegValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,12 @@ import java.util.Locale;
 
 @Controller
 public class RegistrationController {
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     UserService userService;
@@ -44,6 +52,7 @@ public class RegistrationController {
     public String registration(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult bindingResult, Model model, Locale locale, HttpServletResponse response) {
 
 
+
             regValidator.validate(userDTO, bindingResult);
         if (!regValidator.isValidEmailAddress(userDTO.getEmail())) {
             model.addAttribute("nameattribute", messageSource.getMessage("not.email", null, locale));
@@ -58,7 +67,11 @@ public class RegistrationController {
         } else {
             Cookie cookie = new Cookie(USERCOOKIE, userDTO.getEmail());
             response.addCookie(cookie);
+            userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
             userService.createUser(userDTO);
+
+            securityService.autoLogin(userDTO.getNickname(), userDTO.getPassword());
+
             return LOGIN;
         }
     }

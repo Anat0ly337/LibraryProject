@@ -8,6 +8,7 @@ import library.service.UserService;
 import library.validators.LoginValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,9 @@ public class LoginController {
     @Autowired
     MessageSource messageSource;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private static final String LOGIN = "/login";
     private static final String USERSESSION = "USERSESSION";
     private static final String BACKOFFICE = "/backoffice";
@@ -45,6 +49,9 @@ public class LoginController {
     public ModelAndView entry(@Valid @ModelAttribute("userDTO") UserDTO userDTO, BindingResult bindingResult, HttpSession session, Locale locale) {
         ModelAndView modelAndView = new ModelAndView();
         loginValidator.validate(userDTO, bindingResult);
+
+
+        //TODO
         if (!loginValidator.isValidEmailAddress(userDTO.getEmail())) {
 
             modelAndView.addObject("nameattribute", messageSource.getMessage("not.email", null, locale));

@@ -3,6 +3,7 @@ package library.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -21,6 +22,8 @@ public class UserEntity implements Serializable {
     private List<PostBook> postBooks;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userID")
     private List<Comment> comments;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userID")
+    private Set<Role> roles;
 
     public List<Comment> getComments() {
         return comments;
@@ -68,5 +71,17 @@ public class UserEntity implements Serializable {
 
     public void setPostBooks(List<PostBook> postBooks) {
         this.postBooks = postBooks;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public String getUsername() {
+        return nickname;
     }
 }
